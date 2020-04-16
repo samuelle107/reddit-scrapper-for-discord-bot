@@ -1,0 +1,1 @@
+worker: python subreddit_notifier.py
