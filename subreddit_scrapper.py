@@ -4,10 +4,7 @@ import time
 from typing import List
 
 class SubredditScraper:
-    def __init__(self, tracked_subreddit: str, keywords: List[str]):
-        self.tracked_subreddit = tracked_subreddit
-        self.keywords = keywords
-
+    def __init__(self):
         # Reddit PRAW
         self.reddit = praw.Reddit(
             client_id=os.environ['CLIENT_ID'],
@@ -17,11 +14,11 @@ class SubredditScraper:
             password=os.environ['PASSWORD']
         )
     
-    def get_scraped_submissions(self):
+    def get_scraped_submissions(self, tracked_subreddit, keywords):
         try:
             return list(filter(
-                    lambda submission: any(keyword in submission.title.lower() for keyword in self.keywords),
-                    self.reddit.subreddit(self.tracked_subreddit).new(limit=10)
+                    lambda submission: any(keyword in submission.title.lower() for keyword in keywords),
+                    self.reddit.subreddit(tracked_subreddit).new(limit=10)
             ))
         except:
             time.sleep(10)

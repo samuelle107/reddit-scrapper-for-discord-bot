@@ -26,12 +26,12 @@ keyword_query = Query()
 @client.event
 async def on_ready():
     channel = client.get_channel(channel_id)
-    scraper = subreddit_scrapper.SubredditScraper(tracked_subreddit, [d['keyword'] for d in keyword_table.all()])
+    scraper = subreddit_scrapper.SubredditScraper()
 
     await channel.send('I am ready!')
 
     while True:
-        for submission in scraper.get_scraped_submissions():
+        for submission in scraper.get_scraped_submissions(tracked_subreddit, [d['keyword'] for d in keyword_table.all()]):
             if not submission_table.search(submission_query.id == submission.id):
                 submission_table.insert({ 'id': submission.id })
                 await channel.send(submission.url)
@@ -56,11 +56,11 @@ async def remove_keyword(ctx, arg):
 
 @client.command()
 async def get_now(ctx):
-    scraper = subreddit_scrapper.SubredditScraper(tracked_subreddit, [d['keyword'] for d in keyword_table.all()])
+    scraper = subreddit_scrapper.SubredditScraper()
 
     foundInterest = False
 
-    for submission in scraper.get_scraped_submissions():
+    for submission in scraper.get_scraped_submissions(tracked_subreddit, [d['keyword'] for d in keyword_table.all()]):
         if not submission_table.search(submission_query.id == submission.id):
             foundInterest = True
             submission_table.insert({ 'id': submission.id })
