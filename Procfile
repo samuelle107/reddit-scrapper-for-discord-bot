@@ -1,1 +1,1 @@
-worker: python subreddit_notifier.py
+worker: python bot.py
