@@ -7,7 +7,6 @@ from discord.ext import commands
 from tinydb import TinyDB, Query, where
 
 # Constants
-tracked_subreddit = 'MechMarket'
 channel_id = 700110066044633169
 client = commands.Bot(command_prefix = '!')
 discord_bot_token = os.environ['DISCORD_BOT_TOKEN']
@@ -33,10 +32,11 @@ async def on_ready():
     await channel.send('I am ready!')
 
     while True:
-        for submission in scraper.get_scraped_submissions(tracked_subreddit, [d['keyword'] for d in keyword_table.all()]):
-            if not submission_table.search(submission_query.id == submission.id):
-                submission_table.insert({ 'id': submission.id })
-                await channel.send(submission.url)
+        for subreddit in [d['subreddit'] for d in subreddit_table.all()]:
+            for submission in scraper.get_scraped_submissions(subreddit, [d['keyword'] for d in keyword_table.all()]):
+                if not submission_table.search(submission_query.id == submission.id):
+                    submission_table.insert({ 'id': submission.id })
+                    await channel.send(submission.url)
 
         await asyncio.sleep(60)
 
@@ -78,11 +78,12 @@ async def get_now(ctx):
 
     foundInterest = False
 
-    for submission in scraper.get_scraped_submissions(tracked_subreddit, [d['keyword'] for d in keyword_table.all()]):
-        if not submission_table.search(submission_query.id == submission.id):
-            foundInterest = True
-            submission_table.insert({ 'id': submission.id })
-            await ctx.send(submission.url)
+    for subreddit in [d['subreddit'] for d in subreddit_table.all()]:
+        for submission in scraper.get_scraped_submissions(subreddit, [d['keyword'] for d in keyword_table.all()]):
+            if not submission_table.search(submission_query.id == submission.id):
+                foundInterest = True
+                submission_table.insert({ 'id': submission.id })
+                await ctx.send(submission.url)
     
     if not foundInterest:
         await ctx.send('Nothing of interest to be found')
