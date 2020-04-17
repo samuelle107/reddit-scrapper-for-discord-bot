@@ -17,7 +17,7 @@ class SubredditScraper:
     def get_scraped_submissions(self, tracked_subreddit, keywords):
         try:
             return list(filter(
-                    lambda submission: any(keyword in submission.title.lower() for keyword in keywords) and '[us' in submission.title.lower(),
+                    lambda submission: any(keyword in submission.title.lower() for keyword in keywords),
                     self.reddit.subreddit(tracked_subreddit).new(limit=10)
             ))
         except:
