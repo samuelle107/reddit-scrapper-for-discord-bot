@@ -18,10 +18,12 @@ db = TinyDB('db.json', sort_keys=True, indent=4, separators=(',', ': '))
 # Tiny DB tables
 submission_table = db.table('post_table')
 keyword_table = db.table('keyword_table')
+subreddit_table = db.table('subreddit_table')
 
 # Tiny DB queries
 submission_query = Query()
 keyword_query = Query()
+subreddit_query = Query()
 
 @client.event
 async def on_ready():
@@ -51,6 +53,22 @@ async def get_keywords(ctx):
 @client.command()
 async def remove_keyword(ctx, arg):
     keyword_table.remove(where('keyword') == arg)
+
+    await ctx.send(f'Sucessfully removed {arg}')
+
+@client.command()
+async def add_subreddits(ctx, *arg):
+    for subreddit in arg:
+        subreddit_table.insert({ 'subreddit': subreddit })
+        await ctx.send(f'Sucessfully added {subreddit}')
+
+@client.command()
+async def get_subreddits(ctx):
+    await ctx.send([d['subreddit'] for d in subreddit_table.all()])
+
+@client.command()
+async def remove_subreddit(ctx, arg):
+    subreddit_table.remove(where('subreddit') == arg)
 
     await ctx.send(f'Sucessfully removed {arg}')
 
