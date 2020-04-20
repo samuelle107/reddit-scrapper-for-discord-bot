@@ -87,4 +87,12 @@ async def get_subreddits(ctx):
     await ctx.send(f'The subreddits are: {", ".join([d[1] for d in result])}')
     con.close()
 
+@client.command()
+async def remove_keyword(ctx, arg):
+    logging.info(f'Removing {arg}')
+    con = psycopg2.connect(DATABASE_URL, sslmode='require')
+    remove(con, 'keyword', 'keyword', arg)
+    await ctx.send(f'Removed: {arg}')
+    con.close()
+
 client.run(DISCORD_BOT_TOKEN)
