@@ -22,9 +22,9 @@ PASSWORD=reddit password
 USER_AGENT=purpose made by /u
 DISCORD_BOT_TOKEN=discord bot token from discord
 ```
-  
-4. Add your Discord channel id (The channel where the bot will live on the Discord server)
-5. Run `python3 bot.py`
+4. Replace all of those values with your own values
+5. Add your Discord channel id (The channel where the bot will live on the Discord server)
+6. Run `python3 bot.py`
 
 ## Bot Commands
 - !add_keywords arg1, arg2, ...
