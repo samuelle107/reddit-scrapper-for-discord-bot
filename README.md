@@ -23,7 +23,7 @@ I started getting into making custom mechanical keyboards lately, but parts are 
   - Remove keyword from the bot
 - !get_keywords
   - Get all the keywords that the bot is searching for
- - !add_subreddits arg1, arg2
+- !add_subreddits arg1, arg2
   - Add subreddits to track
 - !get_subreddits
   - Get all the subreddits that are being tracked
