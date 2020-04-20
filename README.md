@@ -2,7 +2,7 @@
 ## Introduction
 I started getting into making custom mechanical keyboards lately, but parts are usually not available or sold out fast. I made this bot so that I can get alerted about new parts, group buys, or interest checks. I made it so that it is modular and can be applied to different subreddits(s). The bot will look for recent posts in the specific subreddits and search for posts that contain a set of keywords.
 
-## Things to do
+## Pre-requisites
 - Make an application on [Heroku](heroku.com) with a Postgres Database
 - Make an application using dev tools on [Discord](discord.com)
 - Add a bot
