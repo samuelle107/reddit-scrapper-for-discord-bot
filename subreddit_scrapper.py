@@ -1,3 +1,5 @@
+import datetime
+import logging
 import os
 import praw
 import time
@@ -21,6 +23,6 @@ def get_scraped_submissions(tracked_subreddits, keywords):
         ))
     except:
         time.sleep(10)
-        print('Failed to get scrapped submissions')
+        logging.info(f'{str(datetime.datetime.now())}: Failed to get scrapped submissions')
 
         return []
