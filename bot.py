@@ -17,9 +17,7 @@ load_dotenv()
 
 DATABASE_URL = os.environ['DATABASE_URL']
 DISCORD_BOT_TOKEN = os.environ['DISCORD_BOT_TOKEN']
-# CHANNEL_ID = 701619618950807665
-# Test channel
-CHANNEL_ID = 701676696847384646
+CHANNEL_ID = 701619618950807665
 
 # Initialize the bot
 client = commands.Bot(command_prefix='!')
