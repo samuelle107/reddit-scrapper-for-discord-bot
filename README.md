@@ -5,7 +5,7 @@ I started getting into making custom mechanical keyboards lately, but parts are 
 ## Prerequisites
 - Make an application on [Heroku](heroku.com) with a Postgres Database
 - Make an application using dev tools on [Discord](discord.com)
-- Add a bot
+- Add a bot to your Discord application
 - Go to [Reddit's dev preferences](https://www.reddit.com/prefs/apps) and make an application
 
 
