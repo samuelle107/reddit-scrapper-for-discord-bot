@@ -27,13 +27,13 @@ DISCORD_BOT_TOKEN=discord bot token from discord
 6. Run `python3 bot.py`
 
 ## Bot Commands
-- !add_keywords arg1, arg2, ...
+- !add_keywords arg1 arg2 ...
   - Add keywords to the bot to know which posts to look for
 - !remove_keyword arg
   - Remove keyword from the bot
 - !get_keywords
   - Get all the keywords that the bot is searching for
-- !add_subreddits arg1, arg2
+- !add_subreddits arg1 arg2
   - Add subreddits to track
 - !get_subreddits
   - Get all the subreddits that are being tracked
