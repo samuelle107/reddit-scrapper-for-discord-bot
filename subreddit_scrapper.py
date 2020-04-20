@@ -2,7 +2,6 @@ import os
 import praw
 import time
 from dotenv import load_dotenv
-from typing import List
 
 load_dotenv()
     
@@ -17,7 +16,7 @@ def get_scraped_submissions(tracked_subreddits, keywords):
 
     try:
         return list(filter(
-                lambda submission: any(keyword in submission.title.lower() for keyword in keywords),
+                lambda submission: any(keyword.lower() in submission.title.lower() for keyword in keywords),
                 reddit.subreddit(tracked_subreddits).new(limit=10)
         ))
     except:
