@@ -19,7 +19,7 @@ CLIENT_ID=client id from reddit
 CLIENT_SECRET=client secret from reddit
 USERNAME=reddit username
 PASSWORD=reddit password
-USER_AGENT=purpose made by /u
+USER_AGENT=purpose made by /u/you
 DISCORD_BOT_TOKEN=discord bot token from discord
 ```
 4. Replace all of those values with your own values
