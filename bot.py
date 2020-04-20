@@ -2,90 +2,76 @@ import asyncio
 import discord
 import os
 import praw
-import subreddit_scrapper
+import psycopg2
+from db_helper import insert, remove, query_all, does_exist
 from discord.ext import commands
-from tinydb import TinyDB, Query, where
+from dotenv import load_dotenv
+from subreddit_scrapper import get_scraped_submissions
 
-# Constants
-channel_id = 700110066044633169
-client = commands.Bot(command_prefix = '!')
-discord_bot_token = os.environ['DISCORD_BOT_TOKEN']
+# Get .env keys
+load_dotenv()
 
-# Tiny DB
-db = TinyDB('db.json', sort_keys=True, indent=4, separators=(',', ': '))
+DATABASE_URL = os.environ['DATABASE_URL']
+DISCORD_BOT_TOKEN = os.environ['DISCORD_BOT_TOKEN']
+CHANNEL_ID = 701619618950807665
 
-# Tiny DB tables
-submission_table = db.table('post_table')
-keyword_table = db.table('keyword_table')
-subreddit_table = db.table('subreddit_table')
+# Initialize the bot
+client = commands.Bot(command_prefix='!')
 
-# Tiny DB queries
-submission_query = Query()
-keyword_query = Query()
-subreddit_query = Query()
-
+# Discord functions
 @client.event
 async def on_ready():
-    channel = client.get_channel(channel_id)
-    scraper = subreddit_scrapper.SubredditScraper()
-
-    await channel.send('I am ready!')
+    channel = client.get_channel(CHANNEL_ID)
 
     while True:
-        for subreddit in [d['subreddit'] for d in subreddit_table.all()]:
-            for submission in scraper.get_scraped_submissions(subreddit, [d['keyword'] for d in keyword_table.all()]):
-                if not submission_table.search(submission_query.id == submission.id):
-                    submission_table.insert({ 'id': submission.id })
-                    await channel.send(submission.url)
+        # Initialize a connection to the database
+        con = psycopg2.connect(DATABASE_URL, sslmode='require')
+        # Get all of the subreddits and parse it into a string
+        all_subreddits = '+'.join([d[1] for d in query_all(con, 'subreddit')])
+        # Get a list of all keywords
+        all_keywords = [d[1] for d in query_all(con, 'keyword')]
 
+        # Get the most recent 10 submissions
+        for submission in get_scraped_submissions(all_subreddits, all_keywords):
+            submission_does_exist = does_exist(con, 'submission', 'id', submission.id)
+
+            # If the submission is not yet in the database, insert into the database and alert the channel with the URL
+            if not submission_does_exist:
+                insert(con, 'submission', ['id', 'title'], [submission.id, submission.title])
+                await channel.send(submission.url)
+
+        # Close the connection and sleep for 1 minute
+        con.close()
         await asyncio.sleep(60)
 
 @client.command()
 async def add_keywords(ctx, *arg):
+    con = psycopg2.connect(DATABASE_URL, sslmode='require')
     for keyword in arg:
-        keyword_table.insert({ 'keyword': keyword })
+        insert(con, 'keyword', ['keyword'], [keyword])
         await ctx.send(f'Sucessfully added {keyword}')
-
-@client.command()
-async def get_keywords(ctx):
-    await ctx.send([d['keyword'] for d in keyword_table.all()])
-
-@client.command()
-async def remove_keyword(ctx, arg):
-    keyword_table.remove(where('keyword') == arg)
-
-    await ctx.send(f'Sucessfully removed {arg}')
+    con.close()
 
 @client.command()
 async def add_subreddits(ctx, *arg):
+    con = psycopg2.connect(DATABASE_URL, sslmode='require')
     for subreddit in arg:
-        subreddit_table.insert({ 'subreddit': subreddit })
+        insert(con, 'subreddit', ['subreddit'], [subreddit])
         await ctx.send(f'Sucessfully added {subreddit}')
+    con.close()
+
+@client.command()
+async def get_keywords(ctx):
+    con = psycopg2.connect(DATABASE_URL, sslmode='require')
+    result = query_all(con, 'keyword')
+    await ctx.send(f'The keywords are: {", ".join([d[1] for d in result])}')
+    con.close()
 
 @client.command()
 async def get_subreddits(ctx):
-    await ctx.send([d['subreddit'] for d in subreddit_table.all()])
+    con = psycopg2.connect(DATABASE_URL, sslmode='require')
+    result = query_all(con, 'subreddit')
+    await ctx.send(f'The subreddits are: {", ".join([d[1] for d in result])}')
+    con.close()
 
-@client.command()
-async def remove_subreddit(ctx, arg):
-    subreddit_table.remove(where('subreddit') == arg)
-
-    await ctx.send(f'Sucessfully removed {arg}')
-
-@client.command()
-async def get_now(ctx):
-    scraper = subreddit_scrapper.SubredditScraper()
-
-    foundInterest = False
-
-    for subreddit in [d['subreddit'] for d in subreddit_table.all()]:
-        for submission in scraper.get_scraped_submissions(subreddit, [d['keyword'] for d in keyword_table.all()]):
-            if not submission_table.search(submission_query.id == submission.id):
-                foundInterest = True
-                submission_table.insert({ 'id': submission.id })
-                await ctx.send(submission.url)
-    
-    if not foundInterest:
-        await ctx.send('Nothing of interest to be found')
-
-client.run(discord_bot_token)
+client.run(DISCORD_BOT_TOKEN)
