@@ -12,7 +12,17 @@ I started getting into making custom mechanical keyboards lately, but parts are 
 ## Setup
 1. Clone this repository
 2. Run `pip3 install requirements.txt`
-3. Replace all instances of os.enviorn[] with the corresponding key (From Discord, Heroku, and Reddit)
+3. Create a `.env` file with:
+```
+DATABASE_URL=database url from_heroku
+CLIENT_ID=client id from reddit
+CLIENT_SECRET=client secret from reddit
+USERNAME=reddit username
+PASSWORD=reddit password
+USER_AGENT=purpose made by /u
+DISCORD_BOT_TOKEN=discord bot token from discord
+```
+  
 4. Add your Discord channel id (The channel where the bot will live on the Discord server)
 5. Run `python3 bot.py`
 
