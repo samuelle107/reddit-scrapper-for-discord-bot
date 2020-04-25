@@ -16,9 +16,11 @@ def get_scraped_submissions(tracked_subreddits, keywords):
             password=os.environ['PASSWORD']
         )
 
+    forbidden_words = ['[H] Paypal [W]', '[EU-', '[SG]']
+
     try:
         return list(filter(
-                lambda submission: any(keyword.lower() in submission.title.lower() for keyword in keywords),
+                lambda submission: any(keyword.lower() in submission.title.lower() for keyword in keywords) and not any(forbidden_word.lower() in submission.title.lower() for forbidden_word in forbidden_words),
                 reddit.subreddit(tracked_subreddits).new(limit=10)
         ))
     except:
