@@ -16,7 +16,7 @@ def get_scraped_submissions(tracked_subreddits, keywords):
             password=os.environ['PASSWORD']
         )
 
-    forbidden_words = ['[H] Paypal [W]', '[EU-', '[SG]']
+    forbidden_words = ['[H] Paypal', '[EU-', '[SG]', '[CA']
 
     try:
         return list(filter(
