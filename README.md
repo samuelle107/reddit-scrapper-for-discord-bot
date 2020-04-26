@@ -33,7 +33,7 @@ DISCORD_BOT_TOKEN=discord bot token from discord
   - Remove keyword from the bot
 - !get_keywords
   - Get all the keywords that the bot is searching for
-- !add_subreddits arg1 arg2
+- !add_subreddits arg1 arg2 ...
   - Add subreddits to track
 - !get_subreddits
   - Get all the subreddits that are being tracked
