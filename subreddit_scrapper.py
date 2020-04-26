@@ -19,13 +19,17 @@ def get_scraped_submissions(tracked_subreddits, keywords):
     forbidden_words = ['[H] Paypal', '[EU-', '[SG]', '[CA']
 
     try:
-        submissions = reddit.subreddit(tracked_subreddits).new(limit=10)
-        does_contain_keywords = any(keyword.lower() in submission.title.lower() for keyword in keywords)
-        does_contain_forbidden_words = any(forbidden_word.lower() in submission.title.lower() for forbidden_word in forbidden_words)
 
-        return list(filter(lambda submission:  does_contain_keywords and not does_contain_forbidden_words, submissions))
-    except:
+        return list(filter(
+            lambda submission: does_contain_any_words(submission.title, keywords) and not does_contain_any_words(submission.title, forbidden_words),
+            reddit.subreddit(tracked_subreddits).new(limit=10)
+        ))
+    except Exception as e:
         logging.info(f'{str(datetime.datetime.now())}: Failed to get scrapped submissions')
+        logging.error(f'{str(datetime.datetime.now())}: {e}')
         time.sleep(10)
 
         return []
+
+def does_contain_any_words(title, words):
+    return any(word.lower() in title.lower() for word in words)
