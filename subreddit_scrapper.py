@@ -19,7 +19,6 @@ def get_scraped_submissions(tracked_subreddits, keywords):
     forbidden_words = ['[H] Paypal', '[H]Paypal', '[EU-', '[SG]', '[CA']
 
     try:
-
         return list(filter(
             lambda submission: does_contain_any_words(submission.title, keywords) and not does_contain_any_words(submission.title, forbidden_words),
             reddit.subreddit(tracked_subreddits).new(limit=10)
