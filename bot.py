@@ -61,7 +61,7 @@ async def on_ready():
 def add_to_table(table_name, columns, values):
     logging.info(f'{str(datetime.datetime.now())}: Adding {table_name}: {values}')
     con = psycopg2.connect(DATABASE_URL, sslmode='require')
-    for value in value:
+    for value in values:
         insert(con, table_name, columns, value)
     con.close()
 
