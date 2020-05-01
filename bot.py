@@ -97,17 +97,17 @@ async def add_forbidden_words(ctx, *arg):
 @client.command()
 async def get_keywords(ctx):
     result = get_from_table('keyword')
-    await ctx.send(f'The keywords are: {", ".join([d[1] for d in result])}')
+    await ctx.send(f'The keywords are: {result}')
 
 @client.command()
 async def get_subreddits(ctx):
     result = get_from_table('subreddit')
-    await ctx.send(f'The subreddits are: {", ".join([d[1] for d in result])}')
+    await ctx.send(f'The subreddits are: {result}')
 
 @client.command()
 async def get_forbidden_words(ctx):
     result = get_from_table('forbidden_word')
-    await ctx.send(f'The forbidden words are: {", ".join([d[1] for d in result])}')
+    await ctx.send(f'The forbidden words are: {result}')
 
 @client.command()
 async def remove_keyword(ctx, arg):
