@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
     
-def get_scraped_submissions(tracked_subreddits, keywords):
+def get_scraped_submissions(tracked_subreddits, keywords, forbidden_words):
     reddit = praw.Reddit(
             client_id=os.environ['CLIENT_ID'],
             client_secret=os.environ['CLIENT_SECRET'],
@@ -15,8 +15,6 @@ def get_scraped_submissions(tracked_subreddits, keywords):
             username=os.environ['USERNAME'],
             password=os.environ['PASSWORD']
         )
-
-    forbidden_words = ['[H] Paypal', '[H]Paypal', '[EU-', '[SG]', '[CA']
 
     try:
         return list(filter(

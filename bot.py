@@ -30,18 +30,19 @@ async def on_ready():
 
     while True:
         logging.info(f'{str(datetime.datetime.now())}: Checking for new submissions: ')
-        # Initialize a connection to the database
+
         con = psycopg2.connect(DATABASE_URL, sslmode='require')
-        # # Get all of the subreddits and parse it into a string
+
         all_subreddits = '+'.join([d[1] for d in query_all(con, 'subreddit')])
-        # Get a list of all keywords
         all_keywords = [d[1] for d in query_all(con, 'keyword')]
+        all_forbidden_words = [d[1] for d in query_all(con, 'forbidden_word')]
+
         logging.info(f'{str(datetime.datetime.now())}: Subreddits: {all_subreddits}')
         logging.info(f'{str(datetime.datetime.now())}: Keywords: {all_keywords}')
-        
-        submissions = get_scraped_submissions(all_subreddits, all_keywords)
-
+        logging.info(f'{str(datetime.datetime.now())}: Forbidden Words: {all_forbidden_words}')
         logging.info(f'{str(datetime.datetime.now())}: Begin scraping')
+        
+        submissions = get_scraped_submissions(all_subreddits, all_keywords, all_forbidden_words)
 
         for submission in submissions:
             submission_does_exist = does_exist(con, 'submission', 'id', submission.id)
@@ -57,46 +58,60 @@ async def on_ready():
         con.close()
         await asyncio.sleep(60)
 
+def add_to_table(table_name, columns, values):
+    logging.info(f'{str(datetime.datetime.now())}: Adding {table_name}: {values}')
+    con = psycopg2.connect(DATABASE_URL, sslmode='require')
+    for value in value:
+        insert(con, table_name, columns, value)
+    con.close()
+
+def get_from_table(table_name):
+    logging.info(f'{str(datetime.datetime.now())}: Getting {table_name}')
+    con = psycopg2.connect(DATABASE_URL, sslmode='require')
+    result = query_all(con, table_name)
+    con.close()
+    
+    return [d[1] for d in result]
+
+def remove_from_table(table_name, column, value):
+    logging.info(f'{str(datetime.datetime.now())}: Removing {value} from {table_name}')
+    con = psycopg2.connect(DATABASE_URL, sslmode='require')
+    remove(con, table_name, column, value)
+    con.close()
+
 @client.command()
 async def add_keywords(ctx, *arg):
-    logging.info(f'{str(datetime.datetime.now())}: Adding keywords: {arg}')
-    con = psycopg2.connect(DATABASE_URL, sslmode='require')
-    for keyword in arg:
-        insert(con, 'keyword', ['keyword'], [keyword])
-        await ctx.send(f'Sucessfully added {keyword}')
-    con.close()
+    add_to_table('keyword', ['keyword'], arg)
+    await ctx.send(f'Sucessfully added {arg}')
 
 @client.command()
 async def add_subreddits(ctx, *arg):
-    logging.info(f'{str(datetime.datetime.now())}: Adding subreddits: {arg}')
-    con = psycopg2.connect(DATABASE_URL, sslmode='require')
-    for subreddit in arg:
-        insert(con, 'subreddit', ['subreddit'], [subreddit])
-        await ctx.send(f'Sucessfully added {subreddit}')
-    con.close()
+    add_to_table('subreddit', ['subreddit'], arg)
+    await ctx.send(f'Sucessfully added {arg}')
+
+@client.command()
+async def add_forbidden_words(ctx, *arg):
+    add_to_table('forbidden_word', ['forbidden_word'], arg)
+    await ctx.send(f'Sucessfully added {arg}')
 
 @client.command()
 async def get_keywords(ctx):
-    logging.info(f'{str(datetime.datetime.now())}: Getting keywords')
-    con = psycopg2.connect(DATABASE_URL, sslmode='require')
-    result = query_all(con, 'keyword')
+    result = get_from_table('keyword')
     await ctx.send(f'The keywords are: {", ".join([d[1] for d in result])}')
-    con.close()
 
 @client.command()
 async def get_subreddits(ctx):
-    logging.info(f'{str(datetime.datetime.now())}: Getting subreddits')
-    con = psycopg2.connect(DATABASE_URL, sslmode='require')
-    result = query_all(con, 'subreddit')
+    result = get_from_table('subreddit')
     await ctx.send(f'The subreddits are: {", ".join([d[1] for d in result])}')
-    con.close()
+
+@client.command()
+async def get_forbidden_words(ctx):
+    result = get_from_table('forbidden_word')
+    await ctx.send(f'The forbidden words are: {", ".join([d[1] for d in result])}')
 
 @client.command()
 async def remove_keyword(ctx, arg):
-    logging.info(f'{str(datetime.datetime.now())}: Removing {arg}')
-    con = psycopg2.connect(DATABASE_URL, sslmode='require')
-    remove(con, 'keyword', 'keyword', arg)
+    remove_from_table('keyword', 'keyword', arg)
     await ctx.send(f'Removed: {arg}')
-    con.close()
 
 client.run(DISCORD_BOT_TOKEN)
