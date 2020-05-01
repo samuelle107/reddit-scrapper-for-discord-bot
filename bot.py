@@ -81,17 +81,17 @@ def remove_from_table(table_name, column, value):
 
 @client.command()
 async def add_keywords(ctx, *arg):
-    add_to_table('keyword', ['keyword'], arg)
+    add_to_table('keyword', ['keyword'], [arg])
     await ctx.send(f'Sucessfully added {arg}')
 
 @client.command()
 async def add_subreddits(ctx, *arg):
-    add_to_table('subreddit', ['subreddit'], arg)
+    add_to_table('subreddit', ['subreddit'], [arg])
     await ctx.send(f'Sucessfully added {arg}')
 
 @client.command()
 async def add_forbidden_words(ctx, *arg):
-    add_to_table('forbidden_word', ['forbidden_word'], arg)
+    add_to_table('forbidden_word', ['forbidden_word'], [arg])
     await ctx.send(f'Sucessfully added {arg}')
 
 @client.command()
