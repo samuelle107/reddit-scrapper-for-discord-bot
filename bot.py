@@ -50,7 +50,7 @@ async def on_ready():
             if not submission_does_exist:
                 logging.info(f'{str(datetime.datetime.now())}: Found new submission: {submission.title[:100]}')
                 insert(con, 'submission', ['id', 'title'], [submission.id, submission.title[:100].replace("'", "")])
-                await channel.send(f'```{submission.title}```\n\n @everyone \n{submission.url}')
+                await channel.send(f'```{submission.title}```\n @everyone \n\n{submission.url}')
 
         logging.info(f'{str(datetime.datetime.now())}: Finished scraping')
 
