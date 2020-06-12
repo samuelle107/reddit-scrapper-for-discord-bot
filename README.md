@@ -25,6 +25,7 @@ DISCORD_BOT_TOKEN=discord bot token from discord
 4. Replace all of those values with your own values
 5. Add your Discord channel id (The channel where the bot will live on the Discord server)
 6. Run `python3 bot.py`
+7. I forgot to create a table for you guys and I will get to it later. But for now, you have to manually create a table on Postgres.
 
 ## Bot Commands
 - !add_keywords arg1 arg2 ...
