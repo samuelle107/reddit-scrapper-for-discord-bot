@@ -80,19 +80,22 @@ def remove_from_table(table_name, column, value):
     con.close()
 
 @client.command()
-async def add_keywords(ctx, *arg):
-    add_to_table('keyword', ['keyword'], arg)
-    await ctx.send(f'Sucessfully added {arg}')
+async def add_keyword(ctx, *arg):
+    keyword = ' '.join(arg)
+    add_to_table('keyword', ['keyword'], [keyword])
+    await ctx.send(f'Successfully added: {keyword}')
 
 @client.command()
-async def add_subreddits(ctx, *arg):
-    add_to_table('subreddit', ['subreddit'], arg)
-    await ctx.send(f'Sucessfully added {arg}')
+async def add_subreddit(ctx, *arg):
+    subreddit = ' '.join(arg)
+    add_to_table('subreddit', ['subreddit'], [subreddit])
+    await ctx.send(f'Sucessfully added: {subreddit}')
 
 @client.command()
-async def add_forbidden_words(ctx, *arg):
-    add_to_table('forbidden_word', ['forbidden_word'], arg)
-    await ctx.send(f'Sucessfully added {arg}')
+async def add_forbidden_word(ctx, *arg):
+    forbidden_word = ' '.join(arg)
+    add_to_table('forbidden_word', ['forbidden_word'], [forbidden_word])
+    await ctx.send(f'Sucessfully added: {forbidden_word}')
 
 @client.command()
 async def get_keywords(ctx):
@@ -110,8 +113,9 @@ async def get_forbidden_words(ctx):
     await ctx.send(f'The forbidden words are: {result}')
 
 @client.command()
-async def remove_keyword(ctx, arg):
-    remove_from_table('keyword', 'keyword', arg)
-    await ctx.send(f'Removed: {arg}')
+async def remove_keyword(ctx, *arg):
+    keyword = ' '.join(arg)
+    remove_from_table('keyword', 'keyword', keyword)
+    await ctx.send(f'Removed: {keyword}')
 
 client.run(DISCORD_BOT_TOKEN)
